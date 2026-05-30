@@ -32,16 +32,18 @@ function createTableElements(extraInn) {
                     const td = document.createElement("td");
 
                     if (j == 1) {
-                        if (i == -1) td.textContent = "logo";
-                        if (i == 0) td.textContent = "AwayTeam";
+                        tr.setAttribute("name","awayTeam");
+                        if (i == -1) {td.textContent = "logo";  td.setAttribute("name","logo");}
+                        if (i == 0) {td.textContent = "AwayTeam"; td.setAttribute("name","awayName");}
                     } else {
-                        if (i == -1) td.textContent = "logo";
-                        if (i == 0) td.textContent = "HomeTeam";
+                        tr.setAttribute("name","homeTeam");
+                        if (i == -1) {td.textContent = "logo"; td.setAttribute("name","logo");}
+                        if (i == 0) {td.textContent = "HomeTeam"; td.setAttribute("name","homeName");}
                     }
                     if (i > 0 && i < 10) td.textContent = "0";
-                    if (i == 10) td.textContent = "r";
-                    if (i == 11) td.textContent = "h";
-                    if (i == 12) td.textContent = "e";
+                    if (i == 10) {td.textContent = "0";  td.setAttribute("name","R");}
+                    if (i == 11) {td.textContent = "0";  td.setAttribute("name","H");}
+                    if (i == 12) {td.textContent = "0";  td.setAttribute("name","E");}
                     tr.appendChild(td);
                 }
 
