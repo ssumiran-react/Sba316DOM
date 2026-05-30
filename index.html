@@ -1,0 +1,65 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baseball Scoreboard</title>
+    <script type="text/javascript" src="sba316dom.js" defer></script>
+</head>
+
+<body>
+
+    <div>
+        <div>
+            <h3>Register</h3>
+
+            <!-- Registration Form -->
+            <form id="register">
+                <input name="username" type="text" placeholder="Username" required />
+
+                <input name="email" type="email" placeholder="Email" required />
+                <br />
+
+                <input name="password" type="password" placeholder="Password" required />
+
+                <div class="flex-row">
+
+                    <input type="submit" value="Register" />
+                </div>
+            </form>
+            <div>
+                <p id="successMsg"></p>
+            </div>
+
+        </div>
+
+        <!-- Login Side -->
+        <div>
+            <h3>Login Account</h3>
+
+            <!-- Login Form -->
+            <form id="login" >
+                <input name="username" type="text" placeholder="Username" required />
+
+                <input name="password" type="text" placeholder="Password" required />
+
+                <div >
+                    <input type="submit" value="Login" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <h3>Baseball Scoreboard</h3>
+        <div>
+            <table id="tableScore">
+                
+            </table>
+        </div>    
+    </div>
+</body>
+
+</html>
