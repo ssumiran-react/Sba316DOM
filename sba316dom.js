@@ -4,11 +4,17 @@ const frag = document.createDocumentFragment();
 let tCount = 12;
 let numOfTCount = [];
 
+
 let headerTeamScoreboard;
 let awayTeamScoreboard;
 let homeTeamScoreboard;
 let awayTeamData;
 let homeTeamData;
+
+let scoreboard;
+let headRow;
+let awayRow;
+let homeRow;
 
 const TEAMS_DATA = [
     {
@@ -63,9 +69,9 @@ function initialGameTable() {
                 if (i == -1) { th.textContent = "logo"; th.setAttribute("name", "logo"); }
                 if (i == 0) { th.textContent = "Team"; th.setAttribute("name", "team"); }
                 if (i >= 1 && i <= 9) { th.textContent = i; th.setAttribute("name", "inn"); }
-                if (i == 10) { th.textContent = "R"; th.setAttribute("name", "R"); }
-                if (i == 11) { th.textContent = "H"; th.setAttribute("name", "H"); }
-                if (i == 12) { th.textContent = "E"; th.setAttribute("name", "E"); }
+                if (i == 10) { th.textContent = "R"; th.setAttribute("name", "r"); }
+                if (i == 11) { th.textContent = "H"; th.setAttribute("name", "h"); }
+                if (i == 12) { th.textContent = "E"; th.setAttribute("name", "e"); }
 
                 tr.appendChild(th);
                 thead.appendChild(tr);
@@ -74,17 +80,17 @@ function initialGameTable() {
 
                 if (j == 1) {
                     tr.setAttribute("name", "awayTeam");
-                    if (i == -1) { td.textContent = "logo"; td.setAttribute("name", "logo"); }
-                    if (i == 0) { td.textContent = "AwayTeam"; td.setAttribute("name", "awayName"); }
+                    if (i == -1) { td.textContent = "logo"; td.setAttribute("name", "logo");  td.classList.add("awayTeam"); }
+                    if (i == 0) { td.textContent = "AwayTeam"; td.setAttribute("name", "awayName");  td.classList.add("awayTeam"); }
                 } else {
                     tr.setAttribute("name", "homeTeam");
-                    if (i == -1) { td.textContent = "logo"; td.setAttribute("name", "logo"); }
-                    if (i == 0) { td.textContent = "HomeTeam"; td.setAttribute("name", "homeName"); }
+                    if (i == -1) { td.textContent = "logo"; td.setAttribute("name", "logo");  td.classList.add("homeTeam"); }
+                    if (i == 0) { td.textContent = "HomeTeam"; td.setAttribute("name", "homeName");  td.classList.add("homeTeam"); }
                 }
-                if (i >= 1 && i <= 9) { td.textContent = "0"; td.setAttribute("name", "inn"); }
-                if (i == 10) { td.textContent = "0"; td.setAttribute("name", "R"); }
-                if (i == 11) { td.textContent = "0"; td.setAttribute("name", "H"); }
-                if (i == 12) { td.textContent = "0"; td.setAttribute("name", "E"); }
+                if (i >= 1 && i <= 9) { td.textContent = "0"; td.setAttribute("name", "inn"); td.classList.add("inn"); }
+                if (i == 10) { td.textContent = "0"; td.setAttribute("name", "r"); td.classList.add("r"); }
+                if (i == 11) { td.textContent = "0"; td.setAttribute("name", "h"); td.classList.add("h"); }
+                if (i == 12) { td.textContent = "0"; td.setAttribute("name", "e"); td.classList.add("e"); }
 
                 tr.appendChild(td);
                 tbody.appendChild(tr);
@@ -92,15 +98,18 @@ function initialGameTable() {
         }
         j++;
     }
+
+    // tbody.addEventListener("mouseover", ()=>{
+    //                 //if (Number(td.textContent) > 0){
+    //                     tbody.classList.toggle("highlight");
+    //                // }
+    //             })
+
     tableScore.appendChild(thead);
     tableScore.appendChild(tbody);
 }
 
 function addExtraInning() {
-    const tableScoreTrs = tableScore.querySelectorAll("tr");
-    const headRow = tableScoreTrs[0];
-    const awayRow = tableScoreTrs[1];
-    const homeRow = tableScoreTrs[2];
     const lastInn = headRow.cells[headRow.cells.length - 4];
     const columAt = headRow.cells.length - 2;
 
@@ -109,13 +118,15 @@ function addExtraInning() {
     headTh.setAttribute("name", "inn");
     headRow.insertBefore(headTh, headRow.cells[headRow.cells.length - 3]);
 
-    const awayTh = document.createElement("th");
+    const awayTh = document.createElement("td");
     awayTh.textContent = "0";
+    awayTh.classList.add("inn");
     awayTh.setAttribute("name", "inn");
     awayRow.insertBefore(awayTh, awayRow.cells[awayRow.cells.length - 3]);
 
-    const homeTh = document.createElement("th");
+    const homeTh = document.createElement("td");
     homeTh.textContent = "0";
+    homeTh.classList.add("inn");
     homeTh.setAttribute("name", "inn");
     homeRow.insertBefore(homeTh, homeRow.cells[homeRow.cells.length - 3]);
 }
@@ -142,13 +153,61 @@ function addAdminPanel() {
         }
 
         //Getting Scoreboard Elements
-        const scoreboard = tableScore.querySelectorAll("tr");
-        headerTeamScoreboard = scoreboard[0].querySelectorAll("th");
-        awayTeamScoreboard = scoreboard[1].querySelectorAll("td");
-        homeTeamScoreboard = scoreboard[2].querySelectorAll("td");
+        scoreboard = tableScore.querySelectorAll("tr");
+        headRow = scoreboard[0];
+        awayRow = scoreboard[1];
+        homeRow = scoreboard[2];
 
+        //console.log (awayRow.cells);
+        awayRow.addEventListener("change", (e) => {
+            if (event.target !== "NaN") {
 
-        //console.log ();
+                if (event.target.classList.contains("inn") && Number(e.target.textContent) >= 0) {
+                    //td.classList.toggle("highlight");
+                    e.target.classList.add("inning");
+                    //e.target.style.color = "red";
+                    // setTimeout(() => {
+                    //     td.classList.toggle("innings");
+                    // }, 3000);
+                }
+                if (event.target.classList.contains("r") && Number(e.target.textContent) >= 0) {
+                    
+                }
+                if (event.target.classList.contains("h") && Number(e.target.textContent) >= 0) {
+                    e.target.style.color = "orange";
+                }
+                if (event.target.classList.contains("e") && Number(e.target.textContent) >= 0) {
+                    e.target.style.color = "red";
+                }
+                e.target.style.font.weight = "bold";
+            }
+            //console.log(e.target.getAttribute("R"));
+        });
+
+        homeRow.addEventListener("change", (e) => {
+            if (event.target !== "NaN") {
+
+                if (event.target.classList.contains("inn") && Number(e.target.textContent) >= 0) {
+                    //td.classList.toggle("highlight");
+                    e.target.classList.add("inning");
+                    //e.target.style.color = "red";
+                    // setTimeout(() => {
+                    //     td.classList.toggle("innings");
+                    // }, 3000);
+                }
+                if (event.target.classList.contains("r") && Number(e.target.textContent) >= 0) {
+                    
+                }
+                if (event.target.classList.contains("h") && Number(e.target.textContent) >= 0) {
+                    e.target.style.color = "orange";
+                }
+                if (event.target.classList.contains("e") && Number(e.target.textContent) >= 0) {
+                    e.target.style.color = "red";
+                }
+                e.target.style.font.weight = "bold";
+            }
+            //console.log(e.target.getAttribute("R"));
+        });
 
 
         //Selecting Away Team
@@ -214,12 +273,12 @@ function addAdminPanel() {
 
             //Putting Away and Home Teams information
             awayTeamData = TEAMS_DATA[gameSetAwaySelect.selectedIndex - 1]
-            awayTeamScoreboard[0].textContent = awayTeamData.logo;
-            awayTeamScoreboard[1].textContent = awayTeamData.name;
+            awayRow.cells[0].textContent = awayTeamData.logo;
+            awayRow.cells[1].textContent = awayTeamData.name;
 
             homeTeamData = TEAMS_DATA[gameSetHomeSelect.selectedIndex - 1]
-            homeTeamScoreboard[0].textContent = homeTeamData.logo;
-            homeTeamScoreboard[1].textContent = homeTeamData.name;
+            homeRow.cells[0].textContent = homeTeamData.logo;
+            homeRow.cells[1].textContent = homeTeamData.name;
 
         });
 
@@ -238,25 +297,25 @@ function addAdminPanel() {
         gameDiv.appendChild(gameSetDiv);
         gameDiv.appendChild(gameBtnDiv);
 
- ////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////
         //Scoring Div 
         const scoreDiv = document.createElement("div");
         const scoreSetDiv = document.createElement("div");
         const addInnDiv = document.createElement("div");
 
 
-        
+
 
 
         const addInnBtn = document.createElement("button");
         addInnBtn.textContent = "Add Inning";
 
-        addInnBtn.addEventListener("click",addExtraInning);
-        
+        addInnBtn.addEventListener("click", addExtraInning);
+
         addInnDiv.appendChild(addInnBtn);
         scoreDiv.appendChild(scoreSetDiv);
         scoreDiv.appendChild(addInnDiv);
-///////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////
 
         panelDiv.appendChild(gameDiv);
         panelDiv.appendChild(scoreDiv);
