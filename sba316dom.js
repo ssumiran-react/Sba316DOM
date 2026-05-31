@@ -1,10 +1,14 @@
 const tableScore = document.getElementById("tableScore");
 const frag = document.createDocumentFragment();
 
-
 let tCount = 12;
 let numOfTCount = [];
-let extraInn = false;
+let innTd = document.createElement("td");
+
+let awayTeamScoreboard;
+let homeTeamScoreboard;
+let awayTeamData;
+let homeTeamData;
 
 const TEAMS_DATA = [
     {
@@ -23,9 +27,20 @@ const TEAMS_DATA = [
     }
 ]
 
+const ADMIN = [
+    {
+        "user": "admin",
+        "role": "admin",
+        "password": "adm"
+    }
+]    
+
+
+            
 
 firstLoad();
-function firstLoad() {
+function firstLoad() { //console.log(ADMIN[0].user);
+    localStorage.setItem(ADMIN[0].user, JSON.stringify(ADMIN[0]));
     initialGameTable();
     addAdminPanel();
 }
@@ -43,12 +58,12 @@ function initialGameTable() {
             if (j == 0) {
                 const th = document.createElement("th");
 
-                if (i == -1) th.textContent = "logo";
-                if (i == 0) th.textContent = "Team";
-                if (i > 0 && i < 10) th.textContent = i;
-                if (i == 10) th.textContent = "R";
-                if (i == 11) th.textContent = "H";
-                if (i == 12) th.textContent = "E";
+                if (i == -1) {th.textContent = "logo"; th.setAttribute("name", "logo"); }
+                if (i == 0) {th.textContent = "Team";  th.setAttribute("name", "team"); }
+                if (i >= 1 && i <= 9) {th.textContent = i;  th.setAttribute("name", i); }
+                if (i == 10) {th.textContent = "R";  th.setAttribute("name", "R"); }
+                if (i == 11) {th.textContent = "H";  th.setAttribute("name", "H"); }
+                if (i == 12) {th.textContent = "E";  th.setAttribute("name", "E"); }
 
                 tr.appendChild(th);
 
@@ -64,7 +79,7 @@ function initialGameTable() {
                     if (i == -1) { td.textContent = "logo"; td.setAttribute("name", "logo"); }
                     if (i == 0) { td.textContent = "HomeTeam"; td.setAttribute("name", "homeName"); }
                 }
-                if (i > 0 && i < 10) td.textContent = "0";
+                if (i >= 1 && i <= 9) {td.textContent = "0"; td.setAttribute("name", i); }
                 if (i == 10) { td.textContent = "0"; td.setAttribute("name", "R"); }
                 if (i == 11) { td.textContent = "0"; td.setAttribute("name", "H"); }
                 if (i == 12) { td.textContent = "0"; td.setAttribute("name", "E"); }
@@ -79,12 +94,6 @@ function initialGameTable() {
 
 
 }
-
-function addInning() {
-
-}
-
-
 
 function addAdminPanel() {
     try {
@@ -106,6 +115,12 @@ function addAdminPanel() {
         if (!Array.isArray(TEAMS_DATA)) {
             throw new Error("Team data must be an array.");
         }
+
+        //Getting Scoreboard Elements
+        const scoreboard = tableScore.querySelectorAll("tr");
+        awayTeamScoreboard = scoreboard[1].querySelectorAll("td");
+        homeTeamScoreboard = scoreboard[2].querySelectorAll("td");
+        //console.log (homeTeamScoreboard[0].textContent = "bills");
 
         //Selecting Away Team
         const gameSetAwayText = document.createElement("text");
@@ -163,9 +178,17 @@ function addAdminPanel() {
 
         gameStartBtn.textContent = "Start Game";
         gameStartBtn.addEventListener("click", () => {
-            console.log("game st");
             gameEndBtn.disabled = false;
             gameStartBtn.disabled = true;
+            
+            //Putting Away and Home Teams information
+            awayTeamData = TEAMS_DATA[gameSetAwaySelect.selectedIndex -1]
+            awayTeamScoreboard[0].textContent = awayTeamData.logo;
+            awayTeamScoreboard[1].textContent = awayTeamData.name;
+
+            homeTeamData = TEAMS_DATA[gameSetHomeSelect.selectedIndex -1]
+            homeTeamScoreboard[0].textContent = homeTeamData.logo;
+            homeTeamScoreboard[1].textContent = homeTeamData.name;
 
         });
 
@@ -206,14 +229,14 @@ Use the parent-child-sibling relationship to navigate between elements at least 
 Iterate over a collection of elements to accomplish some task.
 Modify the style and/or CSS classes of an element in response to user interactions using the style or classList properties.
 
-Register at least two different event listeners and create the associated event handler functions.
+
 Use at least two Browser Object Model (BOM) properties or methods.
 Include at least one form and/or input with HTML attribute validation.
 Include at least one form and/or input with DOM event-based validation. (This can be the same form or input as the one above, but should include event-based validation in addition to the HTML attribute validation.)
 
 Doen
 Cache at least one element using selectElementById.
-
+Register at least two different event listeners and create the associated event handler functions.
 Create at least one element using createElement.
 Use appendChild and/or prepend to add new elements to the DOM.
 Use the DocumentFragment interface or HTML templating with the cloneNode method to create templated content. 
