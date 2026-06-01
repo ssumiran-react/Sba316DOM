@@ -1,3 +1,6 @@
+const successMsg = document.getElementById("successMsg");
+const form = document.getElementById("signup");
+const login = document.getElementById("login");
 const tableScore = document.getElementById("tableScore");
 const frag = document.createDocumentFragment();
 
@@ -35,23 +38,153 @@ const TEAMS_DATA = [
 
 const ADMIN = [
     {
-        "user": "admin",
+        "admin": "admin",
         "role": "admin",
+        "email": "admin@esports.com",
         "password": "adm"
     }
 ]
 
-
-
-
 firstLoad();
 function firstLoad() { //console.log(ADMIN[0].user);
-    localStorage.setItem(ADMIN[0].user, JSON.stringify(ADMIN[0]));
+    localStorage.setItem(ADMIN[0].admin, JSON.stringify(ADMIN[0]));
     initialGameTable();
     addAdminPanel();
 }
 
+form.addEventListener("submit", validateForm);
+function validateForm() {
+    try {
+        successMsg.style.display = "block";
 
+        if (!isValidUsername(form.username)
+            && isValidEmail(form.email)
+            && isValidPassword(form.password)
+            // && isUsernameExist("register")) 
+        ) {
+
+            let userRegister = {};
+            usernameLowercase = form.username.value.toLowerCase();
+            userRegister[usernameLowercase] = usernameLowercase;
+            userRegister["email"] = form.email.value.toLowerCase();
+            userRegister["role"] = "guest";
+            userRegister["password"] = form.password.value;
+
+            localStorage.setItem(usernameLowercase, JSON.stringify(userRegister));
+
+            successMsg.style.color = "blue";
+            successMsg.textContent = "User created successfully."
+            return true;
+
+        } else { //window.alert("User cannot be created.");
+
+            successMsg.style.color = "red";
+            successMsg.textContent = "User cannot be created."
+
+            return false;
+        }
+
+        //Hide it after 3 seconds (3000 ms)
+        setTimeout(() => {
+            successMsg.style.display = "none";
+        }, 30000);
+
+    } catch (err) {
+        window.alert("Error: " + err.message);
+    }
+}
+function isValidUsername(user) {
+    const userRegex = /^(?=(?:([A-Za-z0-9])(?!\1))*[A-Za-z0-9]{4,}$)(?!([A-Za-z0-9])\2*$)[A-Za-z0-9]+$/;
+
+    if (!userRegex.test(user.value)) {
+        return false;
+    } else {
+        return true;
+    }
+}
+function isValidEmail(email) {  //console.log(email.value, "  email");
+    const emailVal = (email.value).toLowerCase();
+
+    if (emailVal.includes("example.com")) {
+        return false;
+    } else {
+        return true;
+    }
+}
+function isValidPassword(password) { //console.log(password.value, "  password");
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\\/]).{12,}$/;
+
+    if (password.value.includes(form.username.value)
+        || password.value.toLowerCase().includes("password")
+        || (!passwordRegex.test(password.value))
+        //|| (password.value !== passwordCheck.value)
+    ) {   //window.alert((passwordCheck.value) + "  retypePassword");
+        return false;
+    } else {
+        return true;
+    }
+}
+
+// Login Form Event
+login.addEventListener("submit", () => {
+    successMsg.style.display = "block";
+    if (isUsernameExist()) {
+        successMsg.style.color = "green";
+        successMsg.textContent = "Welcome back!";
+    } else {
+        successMsg.style.color = "red";
+        successMsg.textContent = "Incorrect login information."
+    }
+    //Hide it after 3 seconds (3000 ms)
+    setTimeout(() => {
+        //successMsg.style.display = "none";
+    }, 12000);
+});
+
+function isUsernameExist() {
+    let loginUser = login.username.value.toLowerCase();
+    let loginPass = login.password.value;
+
+    try {
+        let exists = false;
+        let userData;
+        let parsedObject;
+
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i); // Get the key at index i
+
+            if (key === loginUser) {
+                //console.log(`Login user found: "${loginUser}" exists as a key in localStorage.`);
+                userData = localStorage.getItem(loginUser);
+                parsedObject = JSON.parse(userData);
+
+                exists = true;
+                break;
+            } else {
+                exists = false;
+            }
+
+        }
+        if (exists === true) {  // Loop through keys and values
+            for (const [key, value] of Object.entries(parsedObject)) {   //window.alert(`Key: ${key}, Value: ${value}`);
+
+                if (key === "password" && loginPass === value) {
+                    exists = true;
+                    //window.alert(key + " in tru  " + value+ "   exists " + exists);
+                    break;
+                } else {
+                    exists = false;
+                    //window.alert(key + " in else  " + value + "   exists " + exists);
+                }
+            }
+        }
+        //window.alert(" ret  exists " + exists);
+        return exists;
+    } catch (error) {
+        console.error("Error from localStorage:", error);
+    }
+}
+//////////////////////
 //startGame.addEventListener("click", startGameTable);
 
 
@@ -80,12 +213,12 @@ function initialGameTable() {
 
                 if (j == 1) {
                     tr.setAttribute("name", "awayTeam");
-                    if (i == -1) { td.textContent = "logo"; td.setAttribute("name", "logo");  td.classList.add("awayTeam"); }
-                    if (i == 0) { td.textContent = "AwayTeam"; td.setAttribute("name", "awayName");  td.classList.add("awayTeam"); }
+                    if (i == -1) { td.textContent = "logo"; td.setAttribute("name", "logo"); td.classList.add("awayTeam"); }
+                    if (i == 0) { td.textContent = "AwayTeam"; td.setAttribute("name", "awayName"); td.classList.add("awayTeam"); }
                 } else {
                     tr.setAttribute("name", "homeTeam");
-                    if (i == -1) { td.textContent = "logo"; td.setAttribute("name", "logo");  td.classList.add("homeTeam"); }
-                    if (i == 0) { td.textContent = "HomeTeam"; td.setAttribute("name", "homeName");  td.classList.add("homeTeam"); }
+                    if (i == -1) { td.textContent = "logo"; td.setAttribute("name", "logo"); td.classList.add("homeTeam"); }
+                    if (i == 0) { td.textContent = "HomeTeam"; td.setAttribute("name", "homeName"); td.classList.add("homeTeam"); }
                 }
                 if (i >= 1 && i <= 9) { td.textContent = "0"; td.setAttribute("name", "inn"); td.classList.add("inn"); }
                 if (i == 10) { td.textContent = "0"; td.setAttribute("name", "r"); td.classList.add("r"); }
@@ -141,8 +274,8 @@ function addAdminPanel() {
         const panelDiv = document.createElement("div");
         panelDiv.classList.add("row");
 
-////////////////////////////////////////////////////////////////////////////
-    // Game: Team Selection Div        
+        ////////////////////////////////////////////////////////////////////////////
+        // Game: Team Selection Div        
         const gameDiv = document.createElement("div");
 
         //Selecting Away Team and Home Team
@@ -174,7 +307,7 @@ function addAdminPanel() {
                     // }, 3000);
                 }
                 if (event.target.classList.contains("r") && Number(e.target.textContent) >= 0) {
-                    
+
                 }
                 if (event.target.classList.contains("h") && Number(e.target.textContent) >= 0) {
                     e.target.style.color = "orange";
@@ -199,7 +332,7 @@ function addAdminPanel() {
                     // }, 3000);
                 }
                 if (event.target.classList.contains("r") && Number(e.target.textContent) >= 0) {
-                    
+
                 }
                 if (event.target.classList.contains("h") && Number(e.target.textContent) >= 0) {
                     e.target.style.color = "orange";
